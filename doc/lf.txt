@@ -1,0 +1,194 @@
+*lf.vim* lf file manager plugin for vim/neovim.
+*lf*
+
+=============================================================================
+CONTENTS *lf-help*
+
+  Introduction .......................... |lf-intro|
+    Requirements .......................... |lf-req|
+  Usage ................................. |lf-usage|
+    Commands .............................. |lf-commands|
+    Mappings .............................. |lf-mappings|
+    Configurations ........................ |lf-config|
+    Functions ............................. |lf-func|
+  Credits ............................... |lf-credits|
+
+=============================================================================
+Introduction                                                        *lf-intro*
+
+This plugins attempts to make lf the file manager companion for vim. Use it
+to create, remove, move files or to quickly select files in lf and open them
+in vim all without leaving vim. It achieves these but utilizing the built-in
+terminal feature of vim and neovim.
+
+-----------------------------------------------------------------------------
+Requirements                                                          *lf-req*
+
+1. lf
+2. Neovim or Vim 8.1 with terminal support
+
+=============================================================================
+Usage                                                               *lf-usage*
+
+By running |:LfPicker| or calling the |lf#pick()| function, a new terminal
+buffer opens running an lf process in picker mode.
+
+Once you select one or more files and press enter, vim quits the lf window
+and opens the first selected file and add the remaining files to the arg
+list/buffer list.
+
+Pressing enter on a file in lf will pick any earlier selection, pick
+the file and exit lf.
+
+Note that pressing <kbd>l</kbd> or <kbd>Right</kbd> on a file would open it
+instead of picking.
+
+You may have to set `set hidden` to make floating window work.
+
+To discard selection and exit, press ^G.
+
+-----------------------------------------------------------------------------
+Commands                                                         *lf-commands*
+
+:LfPicker                                                         *:LfPicker*
+                  Opens an lf window.
+:Lp                                                                       *:Lp*
+                  Does the same as :LfPicker.
+
+-----------------------------------------------------------------------------
+Mappings                                                         *lf-mappings*
+
+Defaults mappings. Can be disabled by setting |g:lf#set_default_mappings| to
+0.
+
+<leader>n
+                  Runs |:LfPicker|.
+
+-----------------------------------------------------------------------------
+Configurations                                                     *lf-config*
+
+g:lf#set_default_mappings                         *g:lf#set_default_mappings*
+                  Default: 1
+                  Enable default mappings.
+                  Examples:
+>
+                  " Disable default mappings
+                  let g:lf#set_default_mappings = 0
+
+                  " Set your own
+                  nnoremap <silent> <leader>nn :LfPicker<CR>
+
+
+                  " Or override
+                  " Start lf in the current file's directory
+                  nnoremap <leader>n :LfPicker '%:p:h'<CR>
+<
+
+g:lf#layout                                                     *g:lf#layout*
+                  Default: 'enew'
+                  Display type for the lf buffer. Default is |enew|, which
+                  has a special behavior to act as a "split explorer" reusing
+                  the current window and brings back the last buffer if
+                  nothing is selected.
+                  Examples:
+>
+                  " Opens the lf window in a split
+                  let g:lf#layout = 'new' " or vnew, tabnew etc.
+
+                  " Or pass a dictionary with window size
+                  let g:lf#layout = { 'left': '~20%' } " or right, up, down
+
+                  " Floating window (neovim only for now)
+                  let g:lf#layout = { 'window': { 'width': 0.9, 'height': 0.6, 'highlight': 'Debug' } }
+                  " Options:
+                  " width, height, yoffset, xoffset : number
+                  " highlight : highlight group assign to the border
+                  " border : border style - 'rounded' / 'sharp' / 'horizontal' / 'vertical' / 'top' / 'bottom' / 'left' / 'right'
+<
+
+g:lf#action                                                     *g:lf#action*
+                  Default: {}
+                  Additional key-binding set for the lf buffer for opening
+                  files in different ways. Nothing is set by default to not
+                  override lf's own key-bindings.
+                  Examples:
+>
+                  let g:lf#action = {
+                        \ '<c-t>': 'tab split',
+                        \ '<c-x>': 'split',
+                        \ '<c-v>': 'vsplit',
+                        \ '<c-o>': function('CopyLinestoRegister') }
+
+                  For example, when inside an lf window, pressing <C-t> will
+                  open the selected file in a tab, instead of the current
+                  window. <C-x> will open in a split an so on. Meanwhile for
+                  multi selected files will be loaded in the buffer list.
+
+                  And finally you can pass a FuncRef and the array of selected
+                  lines will be passed to that function.
+
+                  function! CopyLinestoRegister(lines)
+                    let joined_lines = join(a:lines, "\n")
+                    if len(a:lines) > 1
+                      let joined_lines .= "\n"
+                    endif
+                    echom joined_lines
+                    let @+ = joined_lines
+                  endfunction
+<
+
+g:lf#command                                                   *g:lf#command*
+                  Default: 'lf'
+                  When you want to override the default lf command and add
+                  some extra flags.
+                  For example, to automatically start a sever after lf is
+                  lauched
+>
+                  let g:lf#command = 'lf -server'
+<
+
+g:lf#replace_netrw                                       *g:lf#replace_netrw*
+                  Default: 0
+                  Open lf instead of netrw when opening a directory.
+
+
+g:lf#statusline                                             *g:lf#statusline*
+                  Default: 1
+                  The lf statusline. Set to 0 to disable.
+
+g:lf#shell                                                      *g:lf#shell*
+                  Default: &shell
+                  The shell to run the terminal window.
+
+
+-----------------------------------------------------------------------------
+Functions                                                            *lf-func*
+
+lf#pick([{dir}][,{opts}])                                         *lf#pick()*
+                  Can be called with custom directory and additional options
+                  such as opening file in splits or tabs. Basically a more
+                  configurable version of |:LfPicker| command.
+
+                  {dir} : (string) a directory.
+                  {opts}: (dict) can be:
+                    edit  : type of window the select file will be open. Or
+                            pass a FuncRef and array of selected files will be
+                            passed to that function.
+                    layout: same as |g:lf#layout| and overrides it if
+                             specified.
+
+                  Example:
+>
+                  call lf#pick('~/some-files', { 'edit': 'vertical split' })
+<
+
+=============================================================================
+Credits                                                           *lf-credits*
+
+- lf: https://github.com/gokcehan/lf
+- lf vim plugin: https://github.com/mroavi/lf.vim
+- nnn: https://github.com/jarun/nnn
+- nnn vim plugin: https://github.com/mcchrish/nnn.vim
+
+=============================================================================
+vim:tw=78:ts=2:et:ft=help:norl:

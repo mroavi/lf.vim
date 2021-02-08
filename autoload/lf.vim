@@ -3,12 +3,12 @@ let s:action = ""
 let s:tbuf = 0
 
 function! s:statusline()
-    setlocal statusline=%#StatusLineTerm#\ nnn\ %#StatusLineTermNC#
+    setlocal statusline=%#StatusLineTerm#\ lf\ %#StatusLineTermNC#
 endfunction
 
-function! nnn#select_action(action) abort
+function! lf#select_action(action) abort
     let s:action = a:action
-    " quit nnn
+    " quit lf
     if has("nvim")
         call feedkeys("i\<cr>")
     else
@@ -186,7 +186,7 @@ function! s:switch_back(opts, Cmd)
     if type(l:layout) == v:t_string && l:layout == 'enew' && bufexists(l:buf)
         try
             execute 'keepalt b' l:buf
-        " in case nnn was used to delete file in open buffer
+        " in case lf was used to delete file in open buffer
         catch /E211: File/
             let junk = input(matchstr(string(v:exception), 'E211: .*$') . "\nPress ENTER to continue")
         endtry
@@ -242,14 +242,14 @@ endfunction
 
 function! s:create_term_buf(opts)
     if has("nvim")
-        call termopen([g:nnn#shell, &shellcmdflag, a:opts.cmd], {'on_exit': a:opts.on_exit })
+        call termopen([g:lf#shell, &shellcmdflag, a:opts.cmd], {'on_exit': a:opts.on_exit })
         startinsert
         return bufnr('')
     else
         let l:curwin = get(a:opts, 'curwin', 1)
         let l:hidden = get(a:opts, 'hidden', 0)
         let l:Exit_cb = get(a:opts, 'on_exit')
-        let l:tbuf = term_start([g:nnn#shell, &shellcmdflag, a:opts.cmd], #{ 
+        let l:tbuf = term_start([g:lf#shell, &shellcmdflag, a:opts.cmd], #{ 
                     \ curwin: l:curwin,
                     \ hidden: l:hidden,
                     \ exit_cb: l:Exit_cb
@@ -265,20 +265,10 @@ function! s:create_on_exit_callback(opts)
     let l:opts = a:opts
     function! s:callback(id, code, ...) closure
         if a:code != 0
-            echohl ErrorMsg | echo 'nnn exited with '.a:code | echohl None
+            echohl ErrorMsg | echo 'lf exited with '.a:code | echohl None
             return
         endif
-
         call s:eval_temp_file(l:opts)
-
-        let fdir = !empty($XDG_CONFIG_HOME) ? $XDG_CONFIG_HOME : $HOME.'/.config'
-        let fname = fdir . '/nnn/.lastd'
-        if !empty(glob(fname))
-            let firstline = readfile(fname)[0]
-            let lastd = split(firstline, '"')[1]
-            execute 'cd' fnameescape(lastd)
-            call delete(fnameescape(fname))
-        endif
     endfunction
     return function('s:callback')
 endfunction
@@ -325,13 +315,13 @@ function! s:build_window(layout, term_opts)
 endfunction
 
 
-function! nnn#pick(...) abort
+function! lf#pick(...) abort
     let l:directory = get(a:, 1, '')
     let l:default_opts = { 'edit': 'edit' }
     let l:opts = extend(l:default_opts, get(a:, 2, {}))
     let s:temp_file = tempname()
-    let l:cmd = g:nnn#command.' -p '.shellescape(s:temp_file).' '.(l:directory != '' ? shellescape(l:directory): '')
-    let l:layout = exists('l:opts.layout') ? l:opts.layout : g:nnn#layout
+    let l:cmd = g:lf#command.' -selection-path='.shellescape(s:temp_file).' '.(l:directory != '' ? shellescape(l:directory): '')
+    let l:layout = exists('l:opts.layout') ? l:opts.layout : g:lf#layout
 
     let l:opts.layout = l:layout
     let l:opts.ppos = { 'buf': bufnr(''), 'win': winnr(), 'tab': tabpagenr() }
@@ -339,8 +329,8 @@ function! nnn#pick(...) abort
 
     let l:opts.term_wins = s:build_window(l:layout, { 'cmd': l:cmd, 'on_exit': l:On_exit })
     let s:tbuf = l:opts.term_wins.term.buf
-    setfiletype nnn
-    if g:nnn#statusline && type(l:layout) == v:t_string
+    setfiletype lf
+    if g:lf#statusline && type(l:layout) == v:t_string
         call s:statusline()
     endif
 endfunction
