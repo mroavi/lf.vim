@@ -4,6 +4,11 @@ Fast file manager in vim/neovim powered by lf.
 
 This plugin is a fork of the vim [nnn](https://github.com/mcchrish/nnn.vim) plugin.
 
+<p align="center">
+  <img width="934" src="https://user-images.githubusercontent.com/19517248/107288180-52e55580-6a63-11eb-8f2f-67ce4d673547.png">
+  <small>colorscheme <a href="https://github.com/jacoborus/tender.vim">tender</a></small>
+</p>
+
 ### Requirements
 
 1. lf
