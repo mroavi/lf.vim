@@ -35,7 +35,7 @@ command! -bar -nargs=? -complete=dir LfPicker call lf#pick(<f-args>)
 command! -bar -nargs=? -complete=dir Lp call lf#pick(<f-args>)
 
 if g:lf#set_default_mappings
-    nnoremap <silent> <leader>n :LfPicker<CR>
+    nnoremap <silent> <leader>lf :LfPicker<CR>
 endif
 
 " To open lf when vim load a directory
