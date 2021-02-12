@@ -13,7 +13,7 @@ A clear and concise description of what the bug is.
 **To Reproduce**
 
 Steps to reproduce the behavior and with the **most minimal configuration**.
-With only nnn.vim installed and additional configurations/plugins that helps reproduce the bug:
+With only lf.vim installed and additional configurations/plugins that helps reproduce the bug:
 
 1. Open vim
 2. Run command '....'
@@ -36,7 +36,7 @@ If applicable, add screenshots/gifs/videos to help explain your problem.
 - Vim version: [e.g. neovim 0.3.2, vim 8.1 1-239]
 - Plugin manager: [e.g. vim-plug, pathogen]
 - Plugin version: [e.g. master, commit sha, tag]
-- Nnn version: [e.g. 2.1]
+- Lf version: [e.g. 2.1]
 
 **Additional context**
 
