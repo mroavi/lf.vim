@@ -2,7 +2,7 @@
 
 Fast file manager in vim/neovim powered by lf.
 
-This plugin is a fork of the vim [nnn](https://github.com/mcchrish/nnn.vim) plugin.
+This plugin is a fork of the [nnn](https://github.com/mcchrish/nnn.vim) vim plugin.
 
 <p align="center">
   <img width="934" src="https://user-images.githubusercontent.com/19517248/107288180-52e55580-6a63-11eb-8f2f-67ce4d673547.png">
@@ -119,5 +119,4 @@ call lf#pick('~/some-files', { 'edit': 'vertical split' })
 ### Credits
 
 - Main lf program: https://github.com/gokcehan/lf
-- Main nnn program: https://github.com/jarun/nnn
 - Vim/Neovim nnn plugin: https://github.com/mcchrish/nnn.vim
