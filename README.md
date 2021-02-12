@@ -29,7 +29,7 @@ Plug 'mroavi/lf.vim'
 ### Usage
 
 To open lf as a file picker in vim/neovim, use the command `:LfPicker` or
-`:Lp` or the key-binding `<leader>n`. You can pass a directory to `:LfPicker`
+`:Lp` or the key-binding `<leader>lf`. You can pass a directory to `:LfPicker`
 command and opens lf from there e.g. `:LfPicker path/to/somewhere`.
 
 Once you select one or more files and
