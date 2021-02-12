@@ -53,12 +53,12 @@ You may have to set `set hidden` to make floating window work.
 let g:lf#set_default_mappings = 0
 
 " Then set your own
-nnoremap <silent> <leader>nn :LfPicker<CR>
+nnoremap <silent> <leader>l :LfPicker<CR>
 
 
 " Or override
 " Start lf in the current file's directory
-nnoremap <leader>n :LfPicker %:p:h<CR>
+nnoremap <leader>lf :LfPicker %:p:h<CR>
 ```
 
 #### Layout
